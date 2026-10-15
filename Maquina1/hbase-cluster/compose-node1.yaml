@@ -1,0 +1,81 @@
+services:
+  zookeeper:
+    build: .
+    image: hbase-cluster:3.0.0
+    container_name: zk1
+    hostname: zk1
+    command:
+      - bash
+      - -lc
+      - |
+        echo 1 > /data/zookeeper/myid
+        exec /opt/zookeeper/bin/zkServer.sh start-foreground
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    volumes:
+      - zk1_data:/data/zookeeper
+      - ./config/zoo.cfg:/opt/zookeeper/conf/zoo.cfg:ro
+    restart: unless-stopped
+
+  namenode:
+    image: hbase-cluster:3.0.0
+    build: .
+    container_name: hdfs-nn
+    hostname: hdfs-nn
+    command: ["hdfs", "namenode"]
+    ports:
+      - "8020:8020"
+      - "9870:9870"
+    volumes:
+      - nn_data:/data/hadoop/nn
+      - hadoop_tmp:/data/hadoop/tmp
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+    restart: unless-stopped
+
+  datanode:
+    image: hbase-cluster:3.0.0
+    container_name: hdfs-dn1
+    hostname: hdfs-dn1
+    command: ["hdfs", "datanode"]
+    ports:
+      - "9866:9866"
+      - "9864:9864"
+    volumes:
+      - dn1_data:/data/hadoop/dn
+      - hadoop_tmp:/data/hadoop/tmp
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+    depends_on:
+      - namenode
+    restart: unless-stopped
+
+  hmaster:
+    image: hbase-cluster:3.0.0
+    container_name: hbase-master
+    hostname: hbase-master
+    command:
+      - bash
+      - -lc
+      - exec /opt/hbase/bin/hbase master start
+    ports:
+      - "16000:16000"
+      - "16010:16010"
+    volumes:
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./config/core-site.xml:/opt/hbase/conf/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hbase/conf/hdfs-site.xml:ro
+      - ./config/hbase-site.xml:/opt/hbase/conf/hbase-site.xml:ro
+    depends_on:
+      - namenode
+      - zookeeper
+    restart: unless-stopped
+
+volumes:
+  zk1_data:
+  nn_data:
+  dn1_data:
+  hadoop_tmp:
