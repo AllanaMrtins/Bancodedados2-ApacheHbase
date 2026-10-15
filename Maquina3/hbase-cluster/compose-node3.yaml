@@ -2,7 +2,7 @@ services:
   zookeeper:
     image: hbase-cluster:3.0.0
     container_name: zookeeper-3
-    hostname: 192.168.1.103
+    hostname: 100.122.222.2
     restart: unless-stopped
     command:
       - bash
@@ -21,7 +21,7 @@ services:
   datanode:
     image: hbase-cluster:3.0.0
     container_name: hdfs-dn3
-    hostname: 192.168.1.103
+    hostname: 100.122.222.2
     restart: unless-stopped
     command: ["hdfs", "datanode"]
     ports:
@@ -36,7 +36,7 @@ services:
   regionserver:
     image: hbase-cluster:3.0.0
     container_name: hbase-regionserver-3
-    hostname: 192.168.1.103
+    hostname: 100.122.222.2
     restart: unless-stopped
     command: ["hbase", "regionserver", "start"]
     ports:

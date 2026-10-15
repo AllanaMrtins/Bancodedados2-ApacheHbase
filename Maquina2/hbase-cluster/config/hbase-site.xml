@@ -9,12 +9,12 @@
 
     <property>
         <name>hbase.rootdir</name>
-        <value>hdfs://192.168.1.101:8020/hbase</value>
+        <value>hdfs://100.126.237.55:8020/hbase</value>
     </property>
 
     <property>
         <name>hbase.zookeeper.quorum</name>
-        <value>192.168.1.101,192.168.1.102,192.168.1.103</value>
+        <value>100.126.237.55,100.76.200.127,100.122.222.2</value>
     </property>
 
     <property>
@@ -24,7 +24,7 @@
 
     <property>
         <name>hbase.master.hostname</name>
-        <value>192.168.1.101</value>
+        <value>100.126.237.55</value>
     </property>
 
     <property>
@@ -34,7 +34,7 @@
 
     <property>
         <name>hbase.regionserver.hostname</name>
-        <value>192.168.1.102</value>
+        <value>100.76.200.127</value>
     </property>
 
     <property>
