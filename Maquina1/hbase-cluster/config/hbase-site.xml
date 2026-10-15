@@ -7,12 +7,12 @@
 
     <property>
         <name>hbase.rootdir</name>
-        <value>hdfs://100.126.237.55:8020/hbase</value>
+        <value>hdfs://100.80.31.21:8020/hbase</value>
     </property>
 
     <property>
         <name>hbase.zookeeper.quorum</name>
-        <value>100.126.237.55,100.76.200.127,100.122.222.2</value>
+        <value>100.80.31.21,100.76.200.127,100.122.222.2</value>
     </property>
 
     <property>
@@ -22,7 +22,7 @@
 
     <property>
         <name>hbase.master.hostname</name>
-        <value>100.126.237.55</value>
+        <value>100.80.31.21</value>
     </property>
 
     <property>

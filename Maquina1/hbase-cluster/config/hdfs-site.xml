@@ -17,7 +17,7 @@
 
     <property>
         <name>dfs.namenode.rpc-address</name>
-        <value>100.126.237.55:8020</value>
+        <value>100.80.31.21:8020</value>
     </property>
 
     <property>
@@ -37,7 +37,7 @@
 
     <property>
         <name>dfs.datanode.hostname</name>
-        <value>100.126.237.55</value>
+        <value>100.80.31.21</value>
     </property>
 
     <property>
