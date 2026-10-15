@@ -1,0 +1,58 @@
+services:
+  zookeeper:
+    image: hbase-cluster:3.0.0
+    container_name: zookeeper-3
+    hostname: 192.168.1.103
+    restart: unless-stopped
+    command:
+      - bash
+      - -lc
+      - |
+        echo 3 > /data/zookeeper/myid
+        exec /opt/zookeeper/bin/zkServer.sh start-foreground
+    ports:
+      - "2181:2181"
+      - "2888:2888"
+      - "3888:3888"
+    volumes:
+      - zk3_data:/data/zookeeper
+      - ./config/zoo.cfg:/opt/zookeeper/conf/zoo.cfg:ro
+
+  datanode:
+    image: hbase-cluster:3.0.0
+    container_name: hdfs-dn3
+    hostname: 192.168.1.103
+    restart: unless-stopped
+    command: ["hdfs", "datanode"]
+    ports:
+      - "9866:9866"
+      - "9864:9864"
+    volumes:
+      - dn3_data:/data/hadoop/dn
+      - hadoop_tmp3:/data/hadoop/tmp
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+
+  regionserver:
+    image: hbase-cluster:3.0.0
+    container_name: hbase-regionserver-3
+    hostname: 192.168.1.103
+    restart: unless-stopped
+    command: ["hbase", "regionserver", "start"]
+    ports:
+      - "16020:16020"
+      - "16030:16030"
+    volumes:
+      - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
+      - ./config/core-site.xml:/opt/hbase/conf/core-site.xml:ro
+      - ./config/hdfs-site.xml:/opt/hbase/conf/hdfs-site.xml:ro
+      - ./config/hbase-site.xml:/opt/hbase/conf/hbase-site.xml:ro
+    depends_on:
+      - datanode
+      - zookeeper
+
+volumes:
+  zk3_data:
+  dn3_data:
+  hadoop_tmp3:
