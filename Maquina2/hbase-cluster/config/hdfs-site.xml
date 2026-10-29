@@ -1,54 +1,36 @@
 <?xml version="1.0"?>
-<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-
 <configuration>
     <property>
         <name>dfs.replication</name>
         <value>3</value>
     </property>
-
-    <property>
-        <name>dfs.namenode.name.dir</name>
-        <value>/data/hadoop/nn</value>
-    </property>
-
     <property>
         <name>dfs.datanode.data.dir</name>
         <value>/data/hadoop/dn</value>
     </property>
-
     <property>
         <name>dfs.namenode.rpc-address</name>
         <value>100.80.31.21:8020</value>
     </property>
-
     <property>
         <name>dfs.namenode.http-address</name>
         <value>100.80.31.21:9870</value>
     </property>
-
     <property>
         <name>dfs.datanode.address</name>
         <value>0.0.0.0:9866</value>
     </property>
-
     <property>
         <name>dfs.datanode.http.address</name>
         <value>0.0.0.0:9864</value>
     </property>
-
-    <property>
-        <name>dfs.datanode.hostname</name>
-        <value>100.76.200.127</value>
-    </property>
-
     <property>
         <name>dfs.client.use.datanode.hostname</name>
-        <value>true</value>
+        <value>false</value>
     </property>
-
     <property>
         <name>dfs.datanode.use.datanode.hostname</name>
-        <value>true</value>
+        <value>false</value>
     </property>
 </configuration>
+
