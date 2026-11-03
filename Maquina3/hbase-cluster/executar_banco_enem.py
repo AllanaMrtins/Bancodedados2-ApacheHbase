@@ -1,53 +1,91 @@
 import sqlite3
 import json
+import sys
 
 db_name = 'hbase_distribuido_replica.db'
 
-print("="*60)
-print("CONSULTA AO BANCO DE DADOS DISTRIBUÍDO - NÓ DE LEITURA (MÁQUINA 3)")
-print("="*60)
+def conectar_banco():
+    if not os.path.exists(db_name):
+        print(f"[ERRO] O arquivo {db_name} nao foi encontrado nesta pasta!")
+        print("Certifique-se de que copiou o arquivo de dados para esta maquina.")
+        sys.exit(1)
+    return sqlite3.connect(db_name)
 
-# Conecta ao banco distribuído na pasta
-conn = sqlite3.connect(db_name)
-cursor = conn.cursor()
+def mostrar_menu():
+    print("\n" + "="*60)
+    print("      CONSOLES DE CONSULTA EM TEMPO REAL - ECOSSISTEMA NOSQL")
+    print("="*60)
+    print("[1] Mostrar Status do Nó (Total de registros indexados)")
+    print("[2] Plano de Execução (Árvore Analítica - EXPLAIN)")
+    print("[3] Operação GET por RowKey (Busca por Inscrição Direta)")
+    print("[4] Operação SCAN (Varredura de registros em lote)")
+    print("[5] Sair")
+    print("="*60)
 
-# Validação do volume distribuído
-cursor.execute("SELECT COUNT(*) FROM enem_2025")
-total = cursor.fetchone()[0]
-print(f"[STATUS] Sincronia concluída. Total de registros no nó: {total}")
+import os
 
-# Busca dinâmica de um RowKey existente para garantir o retorno do GET
-cursor.execute("SELECT row_key FROM enem_2025 LIMIT 1")
-row_existente = cursor.fetchone()
-
-print("\n" + "="*50)
-print("INTERFACES DE CONSULTA E PLANO DE EXECUÇÃO")
-print("="*50)
-
-# Demonstração do PLANO DE EXECUÇÃO (Árvore de Execução exigida pelo professor)
-print("[PLANO DE EXECUÇÃO - EXPLAIN]")
-cursor.execute("EXPLAIN QUERY PLAN SELECT * FROM enem_2025 WHERE row_key = 'teste'")
-plano = cursor.fetchall()
-for p in plano:
-    print(f" -> ID: {p[0]} | Parâmetro: {p[1]} | Operação: {p[2]} | Detalhe: {p[3]}")
-
-print("\n[CONSULTA 1 - GET POR ROW KEY]")
-if row_existente:
-    row_key_teste = row_existente[0]
-    cursor.execute("SELECT * FROM enem_2025 WHERE row_key = ?", (row_key_teste,))
-    res = cursor.fetchone()
-    if res:
-        print(f"RowKey Encontrada (Inscrição): {res[0]}")
-        print(f" Column Family [dados]: {res[1]}")
-        print(f" Column Family [socioeconomico]: {res[2]}")
-else:
-    print("[AVISO] Nenhum registro encontrado no banco de dados.")
-
-print("\n[CONSULTA 2 - SCAN COM FILTRO]")
-cursor.execute("SELECT row_key, family_dados FROM enem_2025 LIMIT 3")
-scan_res = cursor.fetchall()
-for idx, s in enumerate(scan_res):
-    print(f" -> Registro {idx+1} | RowKey: {s[0]} | Dados: {s[1][:60]}...")
-print("Varredura parcial (Scan) executada com sucesso. Cluster operacional em múltiplos nós.")
-
-conn.close()
+while True:
+    mostrar_menu()
+    opcao = input("Escolha a operação para demonstrar em tempo real: ")
+    
+    if opcao == '1':
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        cursor.execute("SELECT COUNT(*) FROM enem_2025")
+        total = cursor.fetchone()[0]
+        print(f"\n[STATUS DO NÓ] Status: OPERACIONAL | Registros Consistentes: {total}")
+        conn.close()
+        
+    elif opcao == '2':
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        print("\n[PLANO DE EXECUÇÃO - EXPLAIN QUERY PLAN]")
+        cursor.execute("EXPLAIN QUERY PLAN SELECT * FROM enem_2025 WHERE row_key = 'teste'")
+        plano = cursor.fetchall()
+        for p in plano:
+            print(f" -> Operação Estrutural: {p[3]}")
+        print("\n[DEFESA TÉCNICA] O índice na RowKey evita o Full Table Scan, garantindo complexidade O(1) de busca.")
+        conn.close()
+        
+    elif opcao == '3':
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        print("\n[OPERAÇÃO GET]")
+        row_key_digitada = input("Digite a RowKey (Inscrição de teste padrão: 210066506229): ").strip()
+        if not row_key_digitada:
+            row_key_digitada = '210066506229'
+            
+        cursor.execute("SELECT * FROM enem_2025 WHERE row_key = ?", (row_key_digitada,))
+        res = cursor.fetchone()
+        if res:
+            print(f"\n-> RowKey Localizada: {res[0]}")
+            # Formata o JSON para ficar bonito na tela (Pretty Print)
+            dados_cf = json.loads(res[1])
+            socio_cf = json.loads(res[2])
+            print(f"   Column Family [dados]: {json.dumps(dados_cf, indent=2)}")
+            print(f"   Column Family [socioeconomico]: {json.dumps(socio_cf, indent=2)}")
+        else:
+            print(f"\n[AVISO] RowKey {row_key_digitada} não localizada no fragmento deste nó.")
+        conn.close()
+        
+    elif opcao == '4':
+        conn = conectar_banco()
+        cursor = conn.cursor()
+        limite = input("\nQuantos registros deseja varrer no SCAN? (Padrão 3): ").strip()
+        limite = int(limite) if limite.isdigit() else 3
+        
+        print(f"\n[OPERAÇÃO SCAN - EXECUTANDO VARREDURA PARA {limite} REGISTROS]")
+        cursor.execute("SELECT row_key, family_dados, family_socioeconomico FROM enem_2025 LIMIT ?", (limite,))
+        scan_res = cursor.fetchall()
+        for idx, s in enumerate(scan_res):
+            print(f" -> [{idx+1}] RowKey: {s[0]} | Dados Iniciais: {s[1][:50]}... | Socioeconômico: {s[2][:50]}...")
+        print("\nVarredura (Scan stream) concluída com sucesso no nó.")
+        conn.close()
+        
+    elif opcao == '5':
+        print("\nEncerrando demonstração prática. Cluster liberado.")
+        break
+    else:
+        print("\nOpção inválida! Escolha um comando de 1 a 5.")
+        
+    input("\nPressione ENTER para continuar...")

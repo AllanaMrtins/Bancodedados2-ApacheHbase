@@ -4,6 +4,11 @@ services:
     container_name: zookeeper-3
     hostname: 100.122.222.2
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
+
     command:
       - bash
       - -lc
@@ -23,6 +28,11 @@ services:
     container_name: hdfs-dn3
     hostname: 100.122.222.2
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
+
     command: ["hdfs", "datanode"]
     ports:
       - "9865:9865"
@@ -38,6 +48,11 @@ services:
     container_name: hbase-regionserver-3
     hostname: 100.122.222.2
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
+
     command: ["hbase", "regionserver", "start"]
     ports:
       - "16020:16020"
