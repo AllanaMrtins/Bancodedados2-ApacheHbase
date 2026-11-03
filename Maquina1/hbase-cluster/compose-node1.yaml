@@ -43,6 +43,7 @@ services:
     ports:
       - "9866:9866"
       - "9864:9864"
+      - "9090:9090"
     volumes:
       - dn1_data:/data/hadoop/dn
       - hadoop_tmp:/data/hadoop/tmp
