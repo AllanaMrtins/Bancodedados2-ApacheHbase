@@ -18,6 +18,10 @@ services:
       - zk1_data:/data/zookeeper
       - ./config/zoo.cfg:/opt/zookeeper/conf/zoo.cfg:ro
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
 
   namenode:
     image: hbase-cluster:3.0.0
@@ -34,6 +38,10 @@ services:
       - ./config/core-site.xml:/opt/hadoop/etc/hadoop/core-site.xml:ro
       - ./config/hdfs-site.xml:/opt/hadoop/etc/hadoop/hdfs-site.xml:ro
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
 
   datanode:
     image: hbase-cluster:3.0.0
@@ -52,6 +60,10 @@ services:
     depends_on:
       - namenode
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
 
   hmaster:
     image: hbase-cluster:3.0.0
@@ -74,6 +86,10 @@ services:
       - namenode
       - zookeeper
     restart: unless-stopped
+    extra_hosts:
+      - "maquina1:100.80.31.21"
+      - "maquina2:100.76.200.127"
+      - "maquina3:100.122.222.2"
 
 volumes:
   zk1_data:

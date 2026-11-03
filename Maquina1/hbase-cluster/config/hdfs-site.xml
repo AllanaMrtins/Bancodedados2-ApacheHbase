@@ -13,9 +13,13 @@
         <value>/data/hadoop/dn</value>
     </property>
     <property>
-        <name>dfs.namenode.rpc-address</name>
-        <value>100.80.31.21:8020</value>
+         <name>dfs.namenode.rpc-address</name>
+        <value>maquina1:8020</value>
     </property>
+  <property>
+    <name>dfs.permissions.enabled</name>
+    <value>false</value>
+  </property>
     <property>
         <name>dfs.namenode.http-address</name>
         <value>100.80.31.21:9870</value>
