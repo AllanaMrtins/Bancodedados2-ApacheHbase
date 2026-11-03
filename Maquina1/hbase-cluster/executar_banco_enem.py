@@ -13,7 +13,7 @@ def conectar_banco():
 
 def mostrar_menu():
     print("\n" + "="*60)
-    print("      CONSOLES DE CONSULTA EM TEMPO REAL - ECOSSISTEMA NO SQL")
+    print("      CONSOLES DE CONSULTA EM TEMPO REAL - ECOSSISTEMA NOSQL")
     print("="*60)
     print("[1] Mostrar Status do Nó (Total de registros indexados)")
     print("[2] Plano de Execução (Árvore Analítica - EXPLAIN)")
